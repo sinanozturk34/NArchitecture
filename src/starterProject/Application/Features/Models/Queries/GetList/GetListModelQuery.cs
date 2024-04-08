@@ -5,6 +5,7 @@ using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Models.Queries.GetList;
 
@@ -26,6 +27,8 @@ public class GetListModelQuery : IRequest<GetListResponse<GetListModelListItemDt
         public async Task<GetListResponse<GetListModelListItemDto>> Handle(GetListModelQuery request, CancellationToken cancellationToken)
         {
             IPaginate<Model> models = await _modelRepository.GetListAsync(
+             //   predicate: m=>m.DailyPrice<3000,
+                include: m => m.Include(m => m.Brand), 
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize, 
                 cancellationToken: cancellationToken
